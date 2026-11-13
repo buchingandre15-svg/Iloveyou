@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Girlfriend, Aryana? 💖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        @keyframes float {
+            0% { transform: translateY(0vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        .floating-heart {
+            position: absolute;
+            bottom: -10vh;
+            animation: float 6s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-rose-50 to-pink-200 min-h-screen flex items-center justify-center p-4 overflow-hidden relative select-none">
+    
+    <!-- Floating background hearts container -->
+    <div id="hearts-container" class="absolute inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+    <!-- Main Question Card -->
+    <div id="main-card" class="relative z-10 bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 max-w-md w-full text-center border border-pink-200 transition-all duration-500">
+        <!-- Cute Emoji Illustration -->
+        <div class="mb-6 flex justify-center">
+            <div class="w-32 h-32 bg-pink-100 rounded-full flex items-center justify-center shadow-inner animate-pulse">
+                <span class="text-6xl">💌</span>
+            </div>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-800 mb-3 tracking-tight">
+            Aryana, will you be my girlfriend? <span class="inline-block animate-bounce">💖</span>
+        </h1>
+        <p class="text-slate-600 mb-8 text-sm md:text-base">
+            You've become someone really special to me. I love spending time with you, talking with you, and getting to know you more.
+
+So, there's something I've been wanting to ask…. Let's make it official! ✨
+        </p>
+
+        <!-- Buttons Container -->
+        <div id="button-container" class="flex flex-col sm:flex-row items-center justify-center gap-4 relative min-h-[120px]">
+            <button id="yes-btn" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-pink-500/50 hover:scale-105 active:scale-95 transition-all duration-300 text-lg z-25 cursor-pointer">
+                Yes! A million times yes! 🥰
+            </button>
+            <button id="no-btn" class="px-6 py-3 bg-slate-100 text-slate-600 font-medium rounded-2xl shadow hover:bg-slate-200 transition-all duration-200 text-sm absolute sm:relative z-20 cursor-pointer">
+                I need a little time 😅
+            </button>
+        </div>
+    </div>
+
+    <!-- Celebration Screen (Hidden by default) -->
+    <div id="celebration-screen" class="hidden relative z-10 bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 max-w-md w-full text-center border border-pink-200 transition-all duration-700">
+        <div class="mb-6 flex justify-center">
+            <div class="w-36 h-36 bg-gradient-to-tr from-pink-400 to-rose-400 rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                <span class="text-7xl">🎉</span>
+            </div>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-800 mb-3">
+            Yay! Best Day Ever! 💞
+        </h1>
+        <p class="text-slate-600 mb-6 text-base leading-relaxed">
+            Thank you for saying yes, Babe! I promise to make you smile every single day. Let's start this wonderful adventure together! ✨🥂
+        </p>
+        <div class="flex justify-center gap-2 text-3xl">
+            <span>💖</span><span>✨</span><span>🌸</span><span>💘</span><span>🌷</span>
+        </div>
+    </div>
+
+    <script>
+        // Floating hearts generator
+        const heartsContainer = document.getElementById('hearts-container');
+        const heartEmojis = ['💖', '💕', '💗', '💓', '💘', '🌸', '✨'];
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart text-2xl';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            heart.style.opacity = Math.random() * 0.7 + 0.3;
+            heart.style.transform = `scale(${Math.random() * 0.6 + 0.7})`;
+            heart.innerText = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+            heartsContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }
+
+        setInterval(createHeart, 400);
+
+        // Dodging logic for "I need a little time" button
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const mainCard = document.getElementById('main-card');
+        const celebrationScreen = document.getElementById('celebration-screen');
+        
+        let yesScale = 1;
+        let dodgeCount = 0;
+
+        const funnyMessages = [
+            "I need a little time 😅",
+            "Are you sure? 🥺",
+            "Think again! 🏃‍♂️",
+            "Nope, catch me if you can! 💫",
+            "The 'Yes' button is right there 👉",
+            "Nice try, Aryana! 🤭",
+            "Resistance is futile! 💖",
+            "Error 404: Time not found 🙃"
+        ];
+
+        function dodgeButton(e) {
+            if (e) e.preventDefault();
+            
+            // Switch to fixed positioning so it can escape container bounds smoothly
+            noBtn.style.position = 'fixed';
+            
+            const padding = 60;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+            
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+
+            // Cycle through playful button text
+            dodgeCount = (dodgeCount + 1) % funnyMessages.length;
+            noBtn.innerText = funnyMessages[dodgeCount];
+
+            // Gently grow the "Yes" button with each dodge attempt
+            yesScale += 0.04;
+            if (yesScale < 1.35) {
+                yesBtn.style.transform = `scale(${yesScale})`;
+            }
+        }
+
+        noBtn.addEventListener('mouseover', dodgeButton);
+        noBtn.addEventListener('click', dodgeButton);
+        noBtn.addEventListener('touchstart', dodgeButton);
+
+        // Yes button click action & celebration confetti
+        yesBtn.addEventListener('click', () => {
+            mainCard.classList.add('hidden');
+            noBtn.style.display = 'none';
+            celebrationScreen.classList.remove('hidden');
+
+            // Trigger gorgeous confetti explosion
+            var duration = 3.5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        });
+    </script>
+</body>
+</html>
